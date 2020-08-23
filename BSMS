@@ -1,0 +1,172 @@
+use "\\ad.ucl.ac.uk\homep\rmhihap\Documents\assessment.dta
+describe
+summarize
+
+gen age2 = age
+recode age2 min/55=0 55/60=1 60/max=2
+
+tab age2 sex, col mis
+tab mi sex, col mis
+tab alco sex, col mis
+tab binge sex, col mis
+tab material sex, col mis
+tab ht sex, col mis
+tab educ sex, col mis
+tab marital sex, col mis
+tab sports sex, col mis
+tab smoke sex, col mis
+tab econact sex, col mis
+
+gen bmi2 = bmi
+recode bmi2 min/25=1 25/30=2 30/max=3
+
+
+tab bmi2 sex, col mis
+
+tab ht sex, col mis
+mean sex 
+sum SBP if sex==1
+sum SBP if sex==2
+mean age
+sum age 
+histogram age
+
+tab age2 if nmis==0
+tabodds ht age2, or, if nmis==0
+tab sex if nmis==0
+tabodds ht sex, or, if nmis==0
+tab mi if nmis==0
+tabodds ht mi, or, if nmis==0
+tab mi, nolab, if nmis==0
+tab alco if nmis==0
+tabodds ht alco, or, if nmis==0
+tab binge if nmis==0
+tabodds ht binge, or, if nmis==0
+tab material if nmis==0
+tabodds ht material, or, if nmis==0
+tab educ if nmis==0
+tabodds ht educ, or, if nmis==0
+tab marital if nmis==0
+tabodds ht marital, or, if nmis==0
+tab sports if nmis==0
+tabodds ht sports, or, if nmis==0
+tab econact if nmis==0
+tabodds ht econact, or, if nmis==0
+tab smoke if nmis==0
+tabodds ht smoke, or, if nmis==0
+tab bmi if nmis==0
+gen bmi2 = bmi
+recode bmi2 min/25=1 25/30=2 30/max=3
+
+tabodds ht bmi2, or, if nmis==0
+
+summarize SBP
+summarize educ
+
+tab educ age2, chi, if nmis==0
+tab educ sex, chi, if nmis==0
+tab educ mi, chi, if nmis==0
+tab educ alco, chi, if nmis==0
+tab educ binge, chi, if nmis==0
+tab educ material, chi, if nmis==0
+tab educ ht, chi, if nmis==0
+tab educ marital, chi, if nmis==0
+tab educ sports, chi, if nmis==0
+tab educ smoke, chi, if nmis==0
+tab educ econact, chi, if nmis==0
+tab educ bmi2, chi, if nmis==0
+
+-
+
+generate educ_bi=educ
+recode educ_bi 1/2=0 3/4=1
+ tab educ_bi if nmis==0
+ 
+mhodds ht educ_bi if nmis==0
+mhodds ht educ_bi,by(age2), if nmis==0
+mhodds ht educ_bi,by(sex), if nmis==0
+mhodds ht educ_bi,by(mi), if nmis==0
+mhodds ht educ_bi,by(alco), if nmis==0
+mhodds ht educ_bi,by(binge), if nmis==0
+mhodds ht educ_bi,by(material), if nmis==0
+mhodds ht educ_bi,by(marital), if nmis==0
+mhodds ht educ_bi,by(sport), if nmis==0
+mhodds ht educ_bi,by(smoke), if nmis==0
+mhodds ht educ_bi,by(econact), if nmis==0
+mhodds ht educ_bi,by(bmi2), if nmis==0
+
+mhodds ht educ_bi bmi2, by (sports econact), if nmis==0
+mhodds ht educ_bi bmi2
+mhodds ht educ_bi, by(bmi2), if nmis==0
+
+-
+one SBP educ, tab, if nmis==0
+kdensity SBP educ
+xi:regress SBP
+xi:regress SBP i.educ if  nmis==0
+xi:regress SBP i.age2 if nmis==0
+regress SBP sex if nmis==0
+
+histogram SBP
+kdensity SBP educ
+scatter SBP age
+scatter SBP bmi
+scatter SBP bmisq
+
+SBP educ +var
+xi:regress SBP i.educ if nmis==0
+xi:regress SBP i.educ age if nmis==0
+xi:regress SBP i.educ sex if nmis==0
+xi:regress SBP i.educ i.mi if nmis==0
+xi:regress SBP i.educ i.alco if nmis==0
+xi:regress SBP i.educ i.binge if nmis==0
+xi:regress SBP i.educ i.material if nmis==0
+xi:regress SBP i.educ i.marital if nmis==0
+xi:regress SBP i.educ i.sports if nmis==0
+xi:regress SBP i.educ i.smoke if nmis==0
+xi:regress SBP i.educ i.econact if nmis==0
+xi:regress SBP i.educ bmi if nmis==0
+xi:regress SBP i.educ age sex if nmis==0
+xi:regress SBP i.educ age sex mi if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge i.material if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge i.material i.marital if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge i.material i.marital i.sports if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge i.material i.marital i.sports i.smoke if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge i.material i.marital i.sports i.smoke i.econact if nmis==0
+xi:regress SBP i.educ age sex i.mi i.alco binge i.material i.marital i.sports i.smoke i.econact bmi if nmis==0
+
+gen agesq=age*age
+gen bmisq=bmi*bmi
+xi:regress SBP i.educ if nmis==0
+xi:regress SBP age if nmis==0
+xi:regress SBP i.age2 if nmis==0
+testparm  _IeduXage_*
+xi:regress SBP sex if nmis==0
+testparm  _IeduXsex_*
+xi:regress SBP i.mi if nmis==0
+xi:regress SBP i.alco if nmis==0
+testparm  _IeduXalco_*
+xi:regress SBP binge if nmis==0
+testparm  _IeduXbinge_*
+xi:regress SBP i.material if nmis==0
+testparm  _IeduXmat_*
+xi:regress SBP i.marital if nmis==0
+testparm  _IeduXmar_*
+xi:regress SBP i.sports if nmis==0
+testparm  _IeduXspo_* 
+xi:regress SBP i.smoke if nmis==0
+testparm  _IeduXsmo_*
+xi:regress SBP i.econact if nmis==0
+xi:regress SBP bmi if nmis==0
+testparm  _IeduXbmi_*
+xi:regress SBP bmisq if nmis==0
+xi:regress SBP i.educ*bmi age sex i.alco binge i.material i.marital i.sports i.smoke if nmis==0
+gen agesq=age*age
+ xi:regress SBP i.educ*bmi age agesq sex i.alco binge i.material i.marital i.sports i.smoke if nmis==0
+xi:regress SBP i.educ*bmi age i.age2 sex i.alco binge i.material i.marital i.sports i.smoke if nmis==0   
+gen bmisq=bmi*bmi
+xi:regress SBP i.educ*bmi age i.bmi2 sex i.alco binge i.material i.marital i.sports i.smoke if nmis==0
+xi:regress SBP i.educ*bmi age bmisq i.age2 sex i.alco binge i.material i.marital i.sports i.smoke if nmis==0   
+xi:regress SBP i.educ age sex i.alco binge i.material i.marital i.sports i.smoke bmi if nmis==0, beta
